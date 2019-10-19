@@ -51,7 +51,7 @@ public class ViewerCanvas : MonoBehaviour
   public void AddFoldersToDropdown(string folder)
   {
 
-    List<string> parentPaths = GetPaths(Path.Combine(Application.dataPath, folder));
+    List<string> parentPaths = GetPaths(Path.Combine(Application.streamingAssetsPath, folder));
     List<string> parentShortPaths = new List<string>();
     foreach (string parentPath in parentPaths)
     {

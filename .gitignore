@@ -61,4 +61,9 @@ crashlytics-build.properties
 
 
 # Gan Data
-/[Aa]ssets/GanData
+Assets/StreamingAssets/GanData
+
+# Python
+/ML/inputData
+/ML/outputData
+__pycache__
