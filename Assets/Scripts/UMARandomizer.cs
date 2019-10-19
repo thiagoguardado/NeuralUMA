@@ -137,7 +137,7 @@ public class UMARandomizer : MonoBehaviour
 
   public void Save()
   {
-    DataLogger.instance.Save();
+    UMADataLogger.instance.Save();
   }
 }
 

@@ -4,9 +4,9 @@ using System.IO;
 using UnityEngine;
 
 
-public class DataLogger : MonoBehaviour
+public class UMADataLogger : MonoBehaviour
 {
-  public static DataLogger instance;
+  public static UMADataLogger instance;
   private string path;
   private List<DNA_Item> dnaItens = new List<DNA_Item>();
 
@@ -77,20 +77,6 @@ public class DataLogger : MonoBehaviour
 
 }
 
-[Serializable]
-public class JsonData
-{
-  public int id;
-  public string name;
-
-  public JsonData(int id, string name)
-  {
-    this.id = id;
-    this.name = name;
-  }
-
-  public JsonData() { }
-}
 
 [Serializable]
 public class DNA_Log

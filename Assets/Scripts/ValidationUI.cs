@@ -33,14 +33,14 @@ public class ValidationUI : MonoBehaviour
   public void AcceptDNA()
   {
     // AnalyticsReport.ReportPlausible(currentDNA);
-    DataLogger.instance.LogDNAItem(true, umaRandomizer.CurrentDNA,umaRandomizer.CurrentRace);
+    UMADataLogger.instance.LogDNAItem(true, umaRandomizer.CurrentDNA,umaRandomizer.CurrentRace);
     umaRandomizer.Randomize();
   }
 
   public void RejectDNA()
   {
     // AnalyticsReport.ReportNotPlausible(currentDNA);
-    DataLogger.instance.LogDNAItem(false, umaRandomizer.CurrentDNA,umaRandomizer.CurrentRace);
+    UMADataLogger.instance.LogDNAItem(false, umaRandomizer.CurrentDNA,umaRandomizer.CurrentRace);
     umaRandomizer.Randomize();
   }
 
