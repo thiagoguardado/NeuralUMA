@@ -2,26 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class ViewerController : MonoBehaviour
 {
+  public UMASpawner spawner;
+  public UMADataReader reader;
   public ViewerCanvas viewerCanvas;
-  public string parentDataPath;
+  public string outputFile;
+  public bool useLocalData = false;
+
+  void Awake()
+  {
+    viewerCanvas.EpochChange += OnDropDownSelect;
+  }
 
   void Start()
   {
-    viewerCanvas.DropDownChange += OnDropDownSelect;
-
-    ListFolders(parentDataPath);
+    StartCoroutine(Load());
   }
 
-  void ListFolders(string folder)
+  void Update()
   {
-    viewerCanvas.AddFoldersToDropdown(folder);
+    if (Input.GetKeyDown(KeyCode.R))
+    {
+      viewerCanvas.SetText("Reloading...");
+      SceneManager.LoadSceneAsync("Viewer");
+    }
   }
 
-  void OnDropDownSelect(string folder)
+  IEnumerator Load()
   {
-    UMASpawner.instance.SpawnFromFolder(folder);
+    if (useLocalData)
+    {
+      reader.ReadOutputData(Application.streamingAssetsPath + "/GanData/" + outputFile);
+    }
+    else
+    {
+      reader.ReadMongoData();
+    }
+    
+    while (!reader.IsDone) yield return null;
+
+    MLData mlData = reader.MlData;
+    viewerCanvas.Setup(mlData);
+  }
+
+  void OnDropDownSelect(DNA_Item[] itens)
+  {
+    spawner.SpawnItens(itens);
   }
 }

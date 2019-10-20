@@ -5,14 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
-autopep8 = "*"
 
 [packages]
-pymongo = "*"
-dnspython = "*"
-matplotlib = "*"
-pyyaml = "*"
-tensorflow-gpu = "*"
 
 [requires]
 python_version = "3.7"

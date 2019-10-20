@@ -4,6 +4,12 @@ import json
 import os
 import shutil
 
+
+def writeFile(data, name, path):
+    file = open(path + "/" + name + ".json", "w")
+    file.write(json.dumps(data))
+
+
 def writeDNAs(dnaFields, dnasValues, race, path):
     # check if path exists
     checkDir(path)

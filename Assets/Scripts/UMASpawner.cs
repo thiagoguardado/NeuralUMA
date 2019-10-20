@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class UMASpawner : MonoBehaviour
 {
-  public static UMASpawner instance;
   public Transform spawnPoint;
   public GameObject maleUmaPrefab;
   public GameObject femaleUmaPrefab;
@@ -14,32 +13,20 @@ public class UMASpawner : MonoBehaviour
 
   void Awake()
   {
-    instance = this;
     initialPos = transform.localPosition;
   }
 
-  public void SpawnFromFolder(string folder)
+  public void SpawnItens(DNA_Item[] itens)
   {
     // delete todos os umas atuais
     Clear();
 
-    // le todos os arquivos
-    string[] jsonContents = UMADataReader.instance.ReadFolder(folder);
-
-    // coleta todos os dna_itens lidos dos arquivos
-    List<DNA_Item> itens = new List<DNA_Item>();
-    for (int i = 0; i < jsonContents.Length; i++)
-    {
-      DNA_Item item = ProcessJson(jsonContents[i]);
-      if (item != null) itens.Add(item);
-    }
-
     // calcula formato do grid
     int gridSlots = 0;
-    while (itens.Count > gridSlots * gridSlots) gridSlots++;
+    while (itens.Length > gridSlots * gridSlots) gridSlots++;
 
     int instantiated = 0;
-    for (int i = 0; i < itens.Count; i++)
+    for (int i = 0; i < itens.Length; i++)
     {
       Vector3 pos = initialPos + (Vector3.right * gridSize * (instantiated % gridSlots)) + (Vector3.forward * gridSize * (float)Math.Floor((float)instantiated / gridSlots));
       ProcessDNAItem(itens[i], pos);
@@ -48,7 +35,6 @@ public class UMASpawner : MonoBehaviour
 
     // desloca spawn point para centralizar tudo
     spawnPoint.localPosition = initialPos + new Vector3(-1, 0, -1) * (gridSlots - 1) * gridSize / 2;
-
   }
 
   void Clear()
@@ -59,20 +45,6 @@ public class UMASpawner : MonoBehaviour
     }
   }
 
-  DNA_Item ProcessJson(string data)
-  {
-    DNA_Item item = null;
-    try
-    {
-      item = JsonUtility.FromJson<DNA_Item>(data);
-    }
-    catch (System.Exception err)
-    {
-      Debug.LogError(err);
-    }
-
-    return item;
-  }
 
   void ProcessDNAItem(DNA_Item item, Vector3 spawnPos)
   {
@@ -92,6 +64,7 @@ public class UMASpawner : MonoBehaviour
 
   IEnumerator SetupUMA(UMA.CharacterSystem.DynamicCharacterAvatar avatar, DNA_Item item)
   {
+    yield return null;
     yield return null;
     yield return null;
 
