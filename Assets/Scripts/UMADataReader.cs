@@ -12,7 +12,9 @@ public class UMADataReader : MonoBehaviour
   public bool IsDone { get => isDone; }
   public string[] Result { get => result; }
   private MLData mlData;
+  private MLFinalData mlFinalData;
   public MLData MlData { get => mlData; }
+  public MLFinalData MlFinalData { get => mlFinalData; }
 
   public void ReadOutputData(string path)
   {
@@ -31,7 +33,19 @@ public class UMADataReader : MonoBehaviour
       mlData = data;
 
       isDone = true;
-    });
+    }, "gan_output", "output");
+  }
+
+  public void ReadMongoFinalData(){
+    isDone = false;
+    result = null;
+    getter.GetLast((json) =>
+    {
+      MLFinalData data = JsonUtility.FromJson<MLFinalData>(json);
+      mlFinalData = data;
+
+      isDone = true;
+    }, "gan_final_output", "output");
   }
 
   private IEnumerator Read(string path)
@@ -62,10 +76,21 @@ public class MLData
   public RaceData[] data;
 }
 [Serializable]
+public class MLFinalData
+{
+  public RaceFinalData[] finalData;
+}
+[Serializable]
 public class RaceData
 {
   public string key;
   public EpochData[] values;
+}
+[Serializable]
+public class RaceFinalData
+{
+  public string key;
+  public DNA_Item[] values;
 }
 [Serializable]
 public class EpochData

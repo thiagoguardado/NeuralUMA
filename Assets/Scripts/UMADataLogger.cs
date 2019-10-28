@@ -8,6 +8,8 @@ public class UMADataLogger : MonoBehaviour
 {
   public static UMADataLogger instance;
   private string path;
+  public string outputFileName = "DNAlog";
+  public string databaseName = "dna";
   private List<DNA_Item> dnaItens = new List<DNA_Item>();
 
   public List<DNA_Item> DnaItens { get => dnaItens; }
@@ -19,7 +21,7 @@ public class UMADataLogger : MonoBehaviour
 
   private void Start()
   {
-    path = Path.Combine(Application.persistentDataPath, "DNAlog.json");
+    path = Path.Combine(Application.persistentDataPath, outputFileName + ".json");
   }
 
   public void LogDNAItem(bool plausible, Dictionary<string, float> currentDNA, string currentRace)
@@ -69,7 +71,7 @@ public class UMADataLogger : MonoBehaviour
     Debug.Log("Saved at " + path);
 
     // try to save new ones at mongo db
-    DBSender.instance.SendData(dnaItens);
+    DBSender.instance.SendData(dnaItens,databaseName);
 
     // clear
     dnaItens.Clear();

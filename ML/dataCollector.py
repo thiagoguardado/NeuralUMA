@@ -7,7 +7,7 @@ import json
 import os
 import shutil
 
-def collectAll():
+def collectAll(database):
     #  create directory if not exists
     dir = "inputData"
     if os.path.exists(dir):
@@ -17,8 +17,7 @@ def collectAll():
     # conecta to client
     client = pymongo.MongoClient(
         "mongodb+srv://admin:admin@cluster0-vto77.gcp.mongodb.net/test?retryWrites=true&w=majority")
-    db = client.get_database("dna")
-
+    db = client.get_database(database)
 
 
     # iterate all collections

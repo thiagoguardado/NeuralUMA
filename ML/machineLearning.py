@@ -12,7 +12,8 @@ def runML(data):
     BUFFER_SIZE = 50
     EPOCHES = 501
     SNAP_EPOCHES = 50  # how many epoches to print snapshot
-    SNAP_N = 25  # how many random dnas are generated IN SNAPSHOT
+    SNAP_N = 100  # how many random dnas are generated IN SNAPSHOT
+    FINAL_N = 5000  # how many random dnas are generated after training complete
 
     test_data = np.array(data)
     test_data = test_data.astype("float32")
@@ -105,32 +106,39 @@ def runML(data):
     discriminator_optimizer = keras.optimizers.RMSprop()
 
     @tf.function()
-    def training_step(generator: Discriminator, discriminator: Discriminator, images: np.ndarray, k: int = 1, batch_size=32):
+    def training_step(generator: Discriminator, discriminator: Discriminator, dna: np.ndarray, k: int = 1, batch_size=32):
         for _ in range(k):
             with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
                 noise = generator.generate_noise(batch_size, 100)
                 g_z = generator(noise)
-                d_x_true = discriminator(images)  # Trainable?
+                d_x_true = discriminator(dna)  # Trainable?
                 d_x_fake = discriminator(g_z)  # dx_of_gx
 
-                discriminator_loss = discriminator_objective(
-                    d_x_true, d_x_fake)
+                discriminator_loss = discriminator_objective(d_x_true, d_x_fake)
                 # Adjusting Gradient of Discriminator
-                gradients_of_discriminator = disc_tape.gradient(
-                    discriminator_loss, discriminator.trainable_variables)
+                gradients_of_discriminator = disc_tape.gradient(discriminator_loss, discriminator.trainable_variables)
                 # Takes a list of gradient and variables pairs
-                discriminator_optimizer.apply_gradients(
-                    zip(gradients_of_discriminator, discriminator.trainable_variables))
+                discriminator_optimizer.apply_gradients(zip(gradients_of_discriminator, discriminator.trainable_variables))
 
                 generator_loss = generator_objective(d_x_fake)
                 # Adjusting Gradient of Generator
-                gradients_of_generator = gen_tape.gradient(
-                    generator_loss, generator.trainable_variables)
-                generator_optimizer.apply_gradients(
-                    zip(gradients_of_generator, generator.trainable_variables))
+                gradients_of_generator = gen_tape.gradient(generator_loss, generator.trainable_variables)
+                generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
+
+    def snapshot(dnasToCreate):
+        snapshotDNAs = []
+        for _ in range(dnasToCreate):
+            # generating some noise for the training
+            seed = np.random.uniform(-1, 1, size=(1, 100))
+            fake_dna = generator(seed).numpy()[0]
+            fake_dna = fake_dna/2 + 0.5  # un-normalize
+            fake_dna = fake_dna.tolist()
+            snapshotDNAs.append(fake_dna)
+        return snapshotDNAs
 
     def training(dataset, epoches):
         dnas = {}
+        dnas["epoches"] = {}
         for epoch in range(epoches):
             for batch in dataset:
                 training_step(generator, discriminator, batch,
@@ -138,15 +146,13 @@ def runML(data):
 
             # After ith epoch generate some dnas
             if (epoch % SNAP_EPOCHES) == 0:
-                epochDNAs = []
-                for _ in range(SNAP_N):
-                    # generating some noise for the training
-                    seed = np.random.uniform(-1, 1, size=(1, 100))
-                    fake_dna = generator(seed).numpy()[0]
-                    fake_dna = fake_dna/2 + 0.5  # un-normalize
-                    fake_dna = fake_dna.tolist()
-                    epochDNAs.append(fake_dna)
-                dnas[str(epoch)] = epochDNAs
+                epochDNAs = snapshot(SNAP_N)
+                dnas["epoches"][str(epoch)] = epochDNAs
+
+        # final export
+        finalDNAs = snapshot(FINAL_N)
+        dnas["final"] = finalDNAs
+        
         return dnas
 
     return training(train_dataset, EPOCHES)

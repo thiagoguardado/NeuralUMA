@@ -14,6 +14,7 @@ public class UMARandomizer : MonoBehaviour
   private Dictionary<string, float> currentDNA;
   public Dictionary<string, float> CurrentDNA { get => currentDNA; }
   public Transform anchorPoint;
+  public bool getFromDB = false;
 
   private Trait[] possibleValues = new Trait[] {
       new Trait("skinGreenness",false),
@@ -86,6 +87,61 @@ public class UMARandomizer : MonoBehaviour
 
   public void Randomize()
   {
+    if (getFromDB)
+    {
+      RandomizeFromDB();
+    }
+    else
+    {
+      RandomizeLocal();
+    }
+  }
+
+
+  public void RandomizeFromDB()
+  {
+    int index;
+    float newValue;
+    Dictionary<string, float> randomizedDNA = new Dictionary<string, float>();
+
+    //possible values
+    RaceFinalData[] races = RandomizerGetFromDB.instance.FinalData.finalData;
+    RaceFinalData race = races[UnityEngine.Random.Range(0, races.Length)];
+    DNA_Item[] raceItens = race.values;
+    DNA_Item item = raceItens[UnityEngine.Random.Range(0, raceItens.Length)];
+
+    // randomize gender
+    UMA.CharacterSystem.DynamicCharacterAvatar nextAvatar = race.key == "HumanMale" ? targetMaleAvatar : targetFemaleAvatar;
+    if (currentAvatar != nextAvatar)
+    {
+      if (currentAvatar) StartCoroutine(ActivateAvatar(currentAvatar.gameObject, false));
+      StartCoroutine(ActivateAvatar(nextAvatar.gameObject, true));
+      nextAvatar.transform.position = anchorPoint.position;
+    }
+    currentAvatar = nextAvatar;
+
+    currentRace = currentAvatar.activeRace.name;
+
+    // change traits
+    UMA.UMADnaBase[] DNA = currentAvatar.GetAllDNA();
+    UMA.UMADnaBase dnaData = DNA[0];
+    string[] _dnaFieldNames = dnaData.Names;
+
+    foreach (var trait in item.fields)
+    {
+      index = Array.IndexOf(_dnaFieldNames, trait.field);
+      newValue = trait.value;
+      dnaData.SetValue(index, newValue);
+      randomizedDNA.Add(trait.field, newValue);
+    }
+
+    currentDNA = randomizedDNA;
+
+    currentAvatar.ForceUpdate(true, false, false);
+  }
+
+  public void RandomizeLocal()
+  {
     int index;
     float newValue;
     Dictionary<string, float> randomizedDNA = new Dictionary<string, float>();
@@ -120,9 +176,6 @@ public class UMARandomizer : MonoBehaviour
     }
 
     currentDNA = randomizedDNA;
-
-    // update position;
-    // currentAvatar.
 
     currentAvatar.ForceUpdate(true, false, false);
 

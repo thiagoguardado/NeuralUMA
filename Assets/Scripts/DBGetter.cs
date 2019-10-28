@@ -8,16 +8,16 @@ using UnityEngine;
 public class DBGetter : MonoBehaviour
 {
 
-  public void GetLast(Action<string> callback)
+  public void GetLast(Action<string> callback,string database, string collection)
   {
-    StartCoroutine(GetFromMongo(callback));
+    StartCoroutine(GetFromMongo(callback,database,collection));
   }
 
-  public IEnumerator GetFromMongo(Action<string> callback)
+  public IEnumerator GetFromMongo(Action<string> callback,string _database, string _collection)
   {
     var client = new MongoClient("mongodb+srv://admin:admin@cluster0-vto77.gcp.mongodb.net/admin?retryWrites=true&w=majority");
-    var database = client.GetDatabase("gan_output");
-    var collection = database.GetCollection<BsonDocument>("output");
+    var database = client.GetDatabase(_database);
+    var collection = database.GetCollection<BsonDocument>(_collection);
 
     yield return collection.Find(FilterDefinition<BsonDocument>.Empty)
       .Sort("{_id:-1}")

@@ -15,7 +15,7 @@ public class DBSender : MonoBehaviour
     instance = this;
   }
 
-  public void SendData(List<DNA_Item> itens)
+  public void SendData(List<DNA_Item> itens, string databaseName)
   {
     if (itens.Count >= 0)
     {
@@ -24,17 +24,17 @@ public class DBSender : MonoBehaviour
       {
         jsonItens.Add(JsonUtility.ToJson(item));
       }
-      StartCoroutine(SendToMongo(jsonItens.ToArray()));
+      StartCoroutine(SendToMongo(jsonItens.ToArray(),databaseName));
     }
 
   }
-  public IEnumerator SendToMongo(string[] jsons)
+  public IEnumerator SendToMongo(string[] jsons, string databaseName)
   {
     System.Threading.Tasks.Task task = null;
     try
     {
       var client = new MongoClient("mongodb+srv://admin:admin@cluster0-vto77.gcp.mongodb.net/admin?retryWrites=true&w=majority");
-      var database = client.GetDatabase("dna");
+      var database = client.GetDatabase(databaseName);
       var collection = database.GetCollection<BsonDocument>(SystemInfo.deviceName);
 
       List<BsonDocument> bsons = new List<BsonDocument>();
