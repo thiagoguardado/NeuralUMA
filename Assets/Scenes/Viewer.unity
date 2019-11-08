@@ -1071,6 +1071,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   getter: {fileID: 57017180}
+  epochesDatabase: gan_output
+  epochesCollection: output
+  finalDataDatabase: gan_final_output
+  finalDataCollection: output
 --- !u!4 &529965117
 Transform:
   m_ObjectHideFlags: 0

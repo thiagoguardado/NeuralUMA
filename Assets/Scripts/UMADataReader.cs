@@ -15,6 +15,10 @@ public class UMADataReader : MonoBehaviour
   private MLFinalData mlFinalData;
   public MLData MlData { get => mlData; }
   public MLFinalData MlFinalData { get => mlFinalData; }
+  public string epochesDatabase = "gan_output";
+  public string epochesCollection = "output";
+  public string finalDataDatabase = "gan_final_output";
+  public string finalDataCollection = "output";
 
   public void ReadOutputData(string path)
   {
@@ -33,7 +37,7 @@ public class UMADataReader : MonoBehaviour
       mlData = data;
 
       isDone = true;
-    }, "gan_output", "output");
+    }, epochesDatabase, epochesCollection);
   }
 
   public void ReadMongoFinalData(){
@@ -45,7 +49,7 @@ public class UMADataReader : MonoBehaviour
       mlFinalData = data;
 
       isDone = true;
-    }, "gan_final_output", "output");
+    }, finalDataDatabase, finalDataCollection);
   }
 
   private IEnumerator Read(string path)
@@ -62,10 +66,13 @@ public class UMADataReader : MonoBehaviour
       outputFileContents = File.ReadAllText(path);
     }
 
+    
     MLData data = JsonUtility.FromJson<MLData>(outputFileContents);
     mlData = data;
 
     isDone = true;
+
+    yield return null;
   }
 
 }

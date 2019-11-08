@@ -15,12 +15,12 @@ public class ViewerCanvas : MonoBehaviour
   private List<EpochList> dnaFolders = new List<EpochList>();
   private MLData mLData;
 
-  void Start()
-  {
+  void Awake(){
     genderDropdown.onValueChanged.AddListener(delegate { OnGenderDropDownSelect(genderDropdown); });
     epochDropdown.onValueChanged.AddListener(delegate { OnEpochDropDownSelect(epochDropdown); });
 
     SetText("Querying database...");
+
   }
 
   void Update()
