@@ -3,7 +3,7 @@
 Projeto para geração de personagens de jogos digitais através de aprendizado de máquina.
 Esse repositório inclui um projeto de Unity, contendo os apps de coleta de dados e o visualizador de treinamento e também o modelo de aprendizagem de máquina escrito em Python, utilizando Tensorflow 2.0
 
-## Instruções de uso
+## Instruções de uso do Aprendizado de Máquina
 
 As instruções abaixo são referentes à parte de aprendizado de máquina, contida na pasta ML.
 
@@ -32,6 +32,13 @@ E executar o código abaixo, que baixa todas as dependências e cria um ambiente
 pipenv install
 ```
 
+É preciso incluir um arquivo key.json na pasta ML/key, com a URL da base da dados do MongoDB contendo usuário e senha, no seguinte formato:
+```
+{
+  "connURL": "mongodb+srv://username:password@cluster0-vto77.gcp.mongodb.net/test?retryWrites=true&w=majority"
+}
+```
+
 ### Parâmetros
 
 As configurações do modelo estão no arquivo machineLearning.py
@@ -53,3 +60,20 @@ Esse código irá:
 * executar o treinamento para os personagens masculinos e para os personagens femininos
 * enviar os DNAs de cada "fotografia" para o banco de dados remoto
 * enviar os DNAs finais do treinamento para o banco de dados remoto
+
+
+## Instruções de uso do projeto Unity
+
+O projeto em Unity contém as cenas dos aplicativos de Android para coleta de dados e também a cena do visualizador das etapas de treinamento.
+
+### Pré-requisitos
+
+* Unity 2018.4
+
+Incluir um arquivo key.json na pasta StreamingAssets/Key, com a URL da base da dados do MongoDB contendo usuário e senha, no seguinte formato:
+```
+{
+  "connURL": "mongodb+srv://username:password@cluster0-vto77.gcp.mongodb.net/test?retryWrites=true&w=majority"
+}
+```
+

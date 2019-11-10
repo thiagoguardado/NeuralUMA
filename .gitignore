@@ -60,10 +60,12 @@ sysinfo.txt
 crashlytics-build.properties
 
 
-# Gan Data
+# StreamignAssets
 Assets/StreamingAssets/GanData
+Assets/StreamingAssets/Key
 
 # Python
+/ML/key
 /ML/inputData
 /ML/outputData
 __pycache__

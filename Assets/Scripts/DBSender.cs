@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
@@ -24,7 +25,7 @@ public class DBSender : MonoBehaviour
       {
         jsonItens.Add(JsonUtility.ToJson(item));
       }
-      StartCoroutine(SendToMongo(jsonItens.ToArray(),databaseName));
+      StartCoroutine(SendToMongo(jsonItens.ToArray(), databaseName));
     }
 
   }
@@ -33,7 +34,9 @@ public class DBSender : MonoBehaviour
     System.Threading.Tasks.Task task = null;
     try
     {
-      var client = new MongoClient("mongodb+srv://admin:admin@cluster0-vto77.gcp.mongodb.net/admin?retryWrites=true&w=majority");
+      string keyJson = File.ReadAllText(Application.streamingAssetsPath + "/Key/key.json");
+      DBKeyFile key = JsonUtility.FromJson<DBKeyFile>(keyJson);
+      var client = new MongoClient(key.connURL);
       var database = client.GetDatabase(databaseName);
       var collection = database.GetCollection<BsonDocument>(SystemInfo.deviceName);
 

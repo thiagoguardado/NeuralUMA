@@ -15,8 +15,13 @@ def collectAll(database):
     os.makedirs(dir)
 
     # conecta to client
-    client = pymongo.MongoClient(
-        "mongodb+srv://admin:admin@cluster0-vto77.gcp.mongodb.net/test?retryWrites=true&w=majority")
+    url = ""
+
+    with open("key/key.json") as json_file:
+        keyRead = json.load(json_file)
+        url = keyRead["connURL"]
+
+    client = pymongo.MongoClient(url)
     db = client.get_database(database)
 
 

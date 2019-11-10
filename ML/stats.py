@@ -7,7 +7,7 @@ data = readPath("inputData")
 print("--- Random Generation ---")
 justAnalyze(data)
 
-print();
+print()
 
 collectAll("trainedDNA")
 data = readPath("inputData")

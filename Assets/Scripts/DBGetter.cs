@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
@@ -8,14 +9,16 @@ using UnityEngine;
 public class DBGetter : MonoBehaviour
 {
 
-  public void GetLast(Action<string> callback,string database, string collection)
+  public void GetLast(Action<string> callback, string database, string collection)
   {
-    StartCoroutine(GetFromMongo(callback,database,collection));
+    StartCoroutine(GetFromMongo(callback, database, collection));
   }
 
-  public IEnumerator GetFromMongo(Action<string> callback,string _database, string _collection)
+  public IEnumerator GetFromMongo(Action<string> callback, string _database, string _collection)
   {
-    var client = new MongoClient("mongodb+srv://admin:admin@cluster0-vto77.gcp.mongodb.net/admin?retryWrites=true&w=majority");
+    string keyJson = File.ReadAllText(Application.streamingAssetsPath + "/Key/key.json");
+    DBKeyFile key = JsonUtility.FromJson<DBKeyFile>(keyJson);
+    var client = new MongoClient(key.connURL);
     var database = client.GetDatabase(_database);
     var collection = database.GetCollection<BsonDocument>(_collection);
 
@@ -30,4 +33,10 @@ public class DBGetter : MonoBehaviour
       });
   }
 
+}
+
+[Serializable]
+public class DBKeyFile
+{
+  public string connURL;
 }
