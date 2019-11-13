@@ -17,7 +17,7 @@ finalOutput["finalData"] = []
 # train model and add to output
 def train(data, race):
   # run machine learning
-  trainedDNAs = runML(data[race]["plausible"])
+  trainedDNAs = runML(data[race]["plausible"],race)
 
   # epoches
   i = 1
@@ -66,9 +66,8 @@ justAnalyze(data)
 train(data, "HumanMale")
 train(data, "HumanFemale")
 
-#  send to database
-send(output,"gan_output","output")
-send(finalOutput,"gan_final_output","output")
-
+# #  send to database
+# send(output,"gan_output","output")
+# send(finalOutput,"gan_final_output","output")
 
 # writeFile(output,"GanOutput","C:/Users/Thiago/Documents/Unity Projects/NeuralUMA/Assets/StreamingAssets/GanData")

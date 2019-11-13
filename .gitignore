@@ -68,4 +68,5 @@ Assets/StreamingAssets/Key
 /ML/key
 /ML/inputData
 /ML/outputData
+/ML/logs
 __pycache__
